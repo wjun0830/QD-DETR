@@ -11,7 +11,8 @@
 1. Prepare official feature files for QVHighlights dataset from Moment-DETR. 
 
 Download [moment_detr_features.tar.gz](https://drive.google.com/file/d/1Hiln02F1NEpoW8-iPZurRyi-47-W2_B9/view?usp=sharing) (8GB), 
-extract it under project root directory:
+extract it under '../features' directory.
+You can change the data directory by modifying 'feat_root' in shell scripts under 'qd_detr/scripts/' directory.
 ```
 tar -xf path/to/moment_detr_features.tar.gz
 ```
