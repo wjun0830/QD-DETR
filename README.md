@@ -2,8 +2,7 @@
 by 
 WonJun Moon<sup>*1</sup>, SangEek Hyun<sup>*1</sup>, SangUk Park<sup>2</sup>, Dongchan Park<sup>2</sup>, Jae-Pil Heo<sup>1</sup>
 
-<sup>1</sup> Sungkyunkwan University, <sup>2</sup> Pyler
-<sup>*</sup> Equal Contribution
+<sup>1</sup> Sungkyunkwan University, <sup>2</sup> Pyler, <sup>*</sup> Equal Contribution
 
 
 ### Prerequisites
