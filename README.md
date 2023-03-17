@@ -1,9 +1,12 @@
-# QD-DETR : Query-Dependent Video Representation for Moment Retrieval and Highlight Detection
+# QD-DETR : Query-Dependent Video Representation for Moment Retrieval and Highlight Detection (CVPR 2023 Paper)
 by 
 WonJun Moon<sup>*1</sup>, SangEek Hyun<sup>*1</sup>, SangUk Park<sup>2</sup>, Dongchan Park<sup>2</sup>, Jae-Pil Heo<sup>1</sup>
 
 <sup>1</sup> Sungkyunkwan University, <sup>2</sup> Pyler, <sup>*</sup> Equal Contribution
 
+[[Arxiv]()] | [[Paper]()]
+
+----------
 
 ### Prerequisites
 0. Clone this repo
