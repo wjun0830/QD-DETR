@@ -1,9 +1,10 @@
 # QD-DETR : Query-Dependent Video Representation for Moment Retrieval and Highlight Detection
+by 
+WonJun Moon<sup>*1</sup>, SangEek Hyun<sup>*1</sup>, SangUk Park<sup>2</sup>, Dongchan Park<sup>2</sup>, Jae-Pil Heo<sup>1</sup>
 
+<sup>1</sup> Sungkyunkwan University, <sup>2</sup> Pyler
+<sup>*</sup> Equal Contribution
 
-
-
-## Getting Started 
 
 ### Prerequisites
 0. Clone this repo
@@ -56,9 +57,6 @@ bash qd_detr/scripts/train.sh  --resume ${PRETRAIN_CHECKPOINT_PATH}
 ```
 Note that this finetuning process is the same as standard training except that it initializes weights from a pretrained checkpoint. 
 
-
-
-
 ### Others
 - Pretraining with ASR captions
 - Runninng predictions on customized datasets
@@ -66,8 +64,23 @@ Note that this finetuning process is the same as standard training except that i
 are also available as we use the official implementation for Moment-DETR as the basis. 
 For the instructions, check their [github](https://github.com/jayleicn/moment_detr).
  
+###  Cite QD-DETR (QD-DETR : Query-Dependent Video Representation for Moment Retrieval and Highlight Detection)
 
-## LICENSE
+If you find this repository useful, please use the following entry for citation.
+```
+
+```
+
+### Contributors and Contact
+
+If there are any questions, feel free to contact with the authors: WonJun Moon (wjun0830@gmail.com), Sangeek Hyun (hse1032@gmail.com).
+
+### Acknowledgement
+
+This repository is built based on [Moment-DETR](https://github.com/jayleicn/moment_detr) repository.
+Thanks for the great work.
+
+### LICENSE
 The annotation files and many parts of the implementations are borrowed Moment-DETR.
 Following, our codes are also under [MIT](https://opensource.org/licenses/MIT) license.
  
