@@ -4,6 +4,11 @@ WonJun Moon<sup>*1</sup>, SangEek Hyun<sup>*1</sup>, SangUk Park<sup>2</sup>, Do
 
 <sup>1</sup> Sungkyunkwan University, <sup>2</sup> Pyler, <sup>*</sup> Equal Contribution
 
+	
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/query-dependent-video-representation-for/moment-retrieval-on-charades-sta)](https://paperswithcode.com/sota/moment-retrieval-on-charades-sta?p=query-dependent-video-representation-for)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/query-dependent-video-representation-for/moment-retrieval-on-qvhighlights)](https://paperswithcode.com/sota/moment-retrieval-on-qvhighlights?p=query-dependent-video-representation-for)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/query-dependent-video-representation-for/highlight-detection-on-tvsum)](https://paperswithcode.com/sota/highlight-detection-on-tvsum?p=query-dependent-video-representation-for)
+
 [[Arxiv](https://arxiv.org/abs/2303.13874)] | [[Paper]()]
 
 ----------
