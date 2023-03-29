@@ -1,14 +1,24 @@
-# QD-DETR : Query-Dependent Video Representation for Moment Retrieval and Highlight Detection
+# QD-DETR : Query-Dependent Video Representation for Moment Retrieval and Highlight Detection (CVPR 2023 Paper)
+by 
+WonJun Moon<sup>*1</sup>, SangEek Hyun<sup>*1</sup>, SangUk Park<sup>2</sup>, Dongchan Park<sup>2</sup>, Jae-Pil Heo<sup>1</sup>
 
+<sup>1</sup> Sungkyunkwan University, <sup>2</sup> Pyler, <sup>*</sup> Equal Contribution
 
+	
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/query-dependent-video-representation-for/moment-retrieval-on-charades-sta)](https://paperswithcode.com/sota/moment-retrieval-on-charades-sta?p=query-dependent-video-representation-for)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/query-dependent-video-representation-for/moment-retrieval-on-qvhighlights)](https://paperswithcode.com/sota/moment-retrieval-on-qvhighlights?p=query-dependent-video-representation-for)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/query-dependent-video-representation-for/highlight-detection-on-tvsum)](https://paperswithcode.com/sota/highlight-detection-on-tvsum?p=query-dependent-video-representation-for)
 
+[[Arxiv](https://arxiv.org/abs/2303.13874)] | [[Paper]()]
 
-## Getting Started 
+----------
 
-### Prerequisites
-0. Clone this repo
+## Prerequisites
+<b>0. Clone this repo</b>
 
-1. Prepare official feature files for QVHighlights dataset from Moment-DETR. 
+<b>1. Prepare datasets</b>
+
+<b>QVHighlights</b> : Download official feature files for QVHighlights dataset from Moment-DETR. 
 
 Download [moment_detr_features.tar.gz](https://drive.google.com/file/d/1Hiln02F1NEpoW8-iPZurRyi-47-W2_B9/view?usp=sharing) (8GB), 
 extract it under '../features' directory.
@@ -17,13 +27,22 @@ You can change the data directory by modifying 'feat_root' in shell scripts unde
 tar -xf path/to/moment_detr_features.tar.gz
 ```
 
-2. Install dependencies.
+
+<b>TVSum</b> : Download feature files for TVSum dataset from UMT.
+
+Download [TVSum](https://connectpolyu-my.sharepoint.com/personal/21039533r_connect_polyu_hk/_layouts/15/onedrive.aspx?id=%2Fpersonal%2F21039533r%5Fconnect%5Fpolyu%5Fhk%2FDocuments%2FZoo%2FReleases%2FUMT%2Ftvsum%2Dec05ad4e%2Ezip&parent=%2Fpersonal%2F21039533r%5Fconnect%5Fpolyu%5Fhk%2FDocuments%2FZoo%2FReleases%2FUMT&ga=1) (69.1MB),
+and either extract it under '../features/tvsum/' directory or change 'feat_root' in TVSum shell files under 'qd_detr/scripts/tvsum/'.
+
+
+<b>2. Install dependencies.</b>
 Python version 3.7 is required.
 ```
 pip install -r requirements.txt
 ```
 Requirements.txt also include other libraries. Will be cleaned up soon.
 For anaconda setup, please refer to the official [Moment-DETR github](https://github.com/jayleicn/moment_detr).
+
+## QVHighlights
 
 ### Training
 Training with (only video) and (video + audio) can be executed by running the shell below:
@@ -33,7 +52,7 @@ bash qd_detr/scripts/train_audio.sh
 ```
 Best validation accuracy is yielded at the last epoch. 
 
-### Inference Evaluation and Codalab Submission
+### Inference Evaluation and Codalab Submission for QVHighlights
 Once the model is trained, `hl_val_submission.jsonl` and `hl_test_submission.jsonl` can be yielded by running inference.sh.
 ```
 bash qd_detr/scripts/inference.sh results/{direc}/model_best.ckpt 'val'
@@ -56,6 +75,13 @@ bash qd_detr/scripts/train.sh  --resume ${PRETRAIN_CHECKPOINT_PATH}
 ```
 Note that this finetuning process is the same as standard training except that it initializes weights from a pretrained checkpoint. 
 
+## TVSum
+Training with (only video) and (video + audio) can be executed by running the shell below:
+```
+bash qd_detr/scripts/tvsum/train_tvsum.sh 
+bash qd_detr/scripts/tvsum/train_tvsum_audio.sh 
+```
+Best results are stored in 'results_[domain_name]/best_metric.jsonl'.
 
 
 
@@ -66,6 +92,17 @@ Note that this finetuning process is the same as standard training except that i
 are also available as we use the official implementation for Moment-DETR as the basis. 
 For the instructions, check their [github](https://github.com/jayleicn/moment_detr).
  
+##  Cite QD-DETR (Query-Dependent Video Representation for Moment Retrieval and Highlight Detection)
+
+If you find this repository useful, please use the following entry for citation.
+```
+
+```
+
+## Contributors and Contact
+
+If there are any questions, feel free to contact with the authors: WonJun Moon (wjun0830@gmail.com), Sangeek Hyun (hse1032@gmail.com).
+
 
 ## LICENSE
 The annotation files and many parts of the implementations are borrowed Moment-DETR.

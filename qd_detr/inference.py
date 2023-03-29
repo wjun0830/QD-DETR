@@ -85,6 +85,92 @@ def eval_epoch_post_processing(submission, opt, gt_data, save_submission_filenam
     return metrics, metrics_nms, latest_file_paths
 
 
+# for HL
+@torch.no_grad()
+def compute_hl_results(model, eval_loader, opt, epoch_i=None, criterion=None, tb_writer=None):
+    model.eval()
+    if criterion:
+        assert eval_loader.dataset.load_labels
+        criterion.eval()
+
+    loss_meters = defaultdict(AverageMeter)
+    write_tb = tb_writer is not None and epoch_i is not None
+
+    mr_res = []
+
+    topk = 5 # top-5 map
+
+    video_ap_collected = []
+    for batch in tqdm(eval_loader, desc="compute st ed scores"):
+        query_meta = batch[0]
+        if opt.a_feat_dir is None:
+            model_inputs, targets = prepare_batch_inputs(batch[1], opt.device, non_blocking=opt.pin_memory)
+        else:
+            model_inputs, targets = prepare_batch_inputs_audio(batch[1], opt.device, non_blocking=opt.pin_memory)
+        outputs = model(**model_inputs)
+
+        # loss meters
+        if criterion:
+            loss_dict = criterion(outputs, targets)
+            weight_dict = criterion.weight_dict
+            losses = sum(loss_dict[k] * weight_dict[k] for k in loss_dict.keys() if k in weight_dict)
+            loss_dict["loss_overall"] = float(losses)  # for logging only
+            for k, v in loss_dict.items():
+                loss_meters[k].update(float(v) * weight_dict[k] if k in weight_dict else float(v))
+
+
+        preds = outputs['saliency_scores']
+
+        for meta, pred in zip(query_meta, preds):
+            pred = pred
+            label = meta['label'] # raw label
+
+            video_ap = []
+            # Follow the UMT code "https://github.com/TencentARC/UMT/blob/main/datasets/tvsum.py"
+            for i in range(20):
+                cur_pred = pred[:len(label)]
+                inds = torch.argsort(cur_pred, descending=True, dim=-1)
+
+                # video_id = self.get_video_id(idx)
+                cur_label = torch.Tensor(label)[:, i]
+                cur_label = torch.where(cur_label > cur_label.median(), 1.0, .0)
+
+                cur_label = cur_label[inds].tolist()[:topk]
+
+                # if (num_gt := sum(cur_label)) == 0:
+                num_gt = sum(cur_label)
+                if num_gt == 0:
+                    video_ap.append(0)
+                    continue
+
+                hits = ap = rec = 0
+                prc = 1
+
+                for j, gt in enumerate(cur_label):
+                    hits += gt
+
+                    _rec = hits / num_gt
+                    _prc = hits / (j + 1)
+
+                    ap += (_rec - rec) * (prc + _prc) / 2
+                    rec, prc = _rec, _prc
+
+                video_ap.append(ap)
+        video_ap_collected.append(video_ap)  
+
+    mean_ap = np.mean(video_ap_collected)
+    submmission = dict(mAP=round(mean_ap, 5))
+    
+
+    # tensorboard writer
+    if write_tb and criterion:
+        for k, v in loss_meters.items():
+            tb_writer.add_scalar("Eval/{}".format(k), v.avg, epoch_i + 1)
+
+    return submmission, loss_meters 
+
+
+
 @torch.no_grad()
 def compute_mr_results(model, eval_loader, opt, epoch_i=None, criterion=None, tb_writer=None):
     model.eval()
@@ -196,14 +282,27 @@ def eval_epoch(model, eval_dataset, opt, save_submission_filename, epoch_i=None,
             pin_memory=opt.pin_memory
         )
 
+    # tvsum 
+    if opt.dset_name in ['tvsum']:
+        metrics, eval_loss_meters = compute_hl_results(model, eval_loader, opt, epoch_i, criterion, tb_writer)
+        
+        # to match original save format
+        submission = [
+            {"brief": metrics}
+        ]
+        submission_path = os.path.join(opt.results_dir, "latest_metric.jsonl")
+        save_jsonl(submission, submission_path)
 
+        return submission[0], submission[0], eval_loss_meters, [submission_path]
 
-    submission, eval_loss_meters = get_eval_res(model, eval_loader, opt, epoch_i, criterion, tb_writer)
-    if opt.no_sort_results:
-        save_submission_filename = save_submission_filename.replace(".jsonl", "_unsorted.jsonl")
-    metrics, metrics_nms, latest_file_paths = eval_epoch_post_processing(
-        submission, opt, eval_dataset.data, save_submission_filename)
-    return metrics, metrics_nms, eval_loss_meters, latest_file_paths
+    else:
+        submission, eval_loss_meters = get_eval_res(model, eval_loader, opt, epoch_i, criterion, tb_writer)
+            
+        if opt.no_sort_results:
+            save_submission_filename = save_submission_filename.replace(".jsonl", "_unsorted.jsonl")
+        metrics, metrics_nms, latest_file_paths = eval_epoch_post_processing(
+            submission, opt, eval_dataset.data, save_submission_filename)
+        return metrics, metrics_nms, eval_loss_meters, latest_file_paths
 
 
 def setup_model(opt):
@@ -275,7 +374,8 @@ def start_inference(train_opt=None, split=None, splitfile=None):
             max_windows=opt.max_windows,
             load_labels=loadlabel,  # opt.eval_split_name == "val",
             span_loss_type=opt.span_loss_type,
-            txt_drop_ratio=0
+            txt_drop_ratio=0,
+            dset_domain=opt.dset_domain,
         )
     else:
         print("Video+Audio Evaluation")
@@ -296,7 +396,8 @@ def start_inference(train_opt=None, split=None, splitfile=None):
             max_windows=opt.max_windows,
             load_labels=loadlabel,  # opt.eval_split_name == "val",
             span_loss_type=opt.span_loss_type,
-            txt_drop_ratio=0
+            txt_drop_ratio=0,
+            dset_domain=opt.dset_domain,
         )
 
 

@@ -104,9 +104,9 @@ class QDDETR(nn.Module):
                - "aux_outputs": Optional, only returned when auxilary losses are activated. It is a list of
                                 dictionnaries containing the two above keys for each decoder layer.
         """
-        # print(src_aud is not None)
         if src_aud is not None:
             src_vid = torch.cat([src_vid, src_aud], dim=2)
+            
         src_vid = self.input_vid_proj(src_vid)
         src_txt = self.input_txt_proj(src_txt)
         src = torch.cat([src_vid, src_txt], dim=1)  # (bsz, L_vid+L_txt, d)
@@ -127,7 +127,9 @@ class QDDETR(nn.Module):
         pos_ = self.global_rep_pos.reshape([1, 1, self.hidden_dim]).repeat(pos.shape[0], 1, 1)
         pos = torch.cat([pos_, pos], dim=1)
 
-        hs, reference, memory, memory_global = self.transformer(src, ~mask, self.query_embed.weight, pos)
+        video_length = src_vid.shape[1]
+        
+        hs, reference, memory, memory_global = self.transformer(src, ~mask, self.query_embed.weight, pos, video_length=video_length)
         outputs_class = self.class_embed(hs)  # (#layers, batch_size, #queries, #classes)
         reference_before_sigmoid = inverse_sigmoid(reference)
         tmp = self.span_embed(hs)
@@ -147,6 +149,12 @@ class QDDETR(nn.Module):
                 proj_txt_mem=proj_txt_mem,
                 proj_vid_mem=proj_vid_mem
             ))
+            
+            
+        # !!! this is code for test
+        if src_txt.shape[1] == 0:
+            print("There is zero text query. You should change codes properly")
+            exit(-1)
 
         ### Neg Pairs ###
         src_txt_neg = torch.cat([src_txt[1:], src_txt[0:1]], dim=0)
@@ -158,7 +166,7 @@ class QDDETR(nn.Module):
         src_neg = torch.cat([src_, src_neg], dim=1)
         pos_neg = pos.clone()  # since it does not use actual content
 
-        _, _, memory_neg, memory_global_neg = self.transformer(src_neg, ~mask_neg, self.query_embed.weight, pos_neg)
+        _, _, memory_neg, memory_global_neg = self.transformer(src_neg, ~mask_neg, self.query_embed.weight, pos_neg, video_length=video_length)
         vid_mem_neg = memory_neg[:, :src_vid.shape[1]]
 
 
@@ -166,6 +174,7 @@ class QDDETR(nn.Module):
 
         out["saliency_scores_neg"] = (torch.sum(self.saliency_proj1(vid_mem_neg) * self.saliency_proj2(memory_global_neg).unsqueeze(1), dim=-1) / np.sqrt(self.hidden_dim))
 
+        # print(src_vid_mask.shape, src_vid.shape, vid_mem_neg.shape, vid_mem.shape)
         out["video_mask"] = src_vid_mask
         if self.aux_loss:
             # assert proj_queries and proj_txt_mem
@@ -194,7 +203,7 @@ class SetCriterion(nn.Module):
     """
 
     def __init__(self, matcher, weight_dict, eos_coef, losses, temperature, span_loss_type, max_v_l,
-                 saliency_margin=1):
+                 saliency_margin=1, use_matcher=True):
         """ Create the criterion.
         Parameters:
             matcher: module able to compute a matching between targets and proposals
@@ -222,6 +231,9 @@ class SetCriterion(nn.Module):
         empty_weight = torch.ones(2)
         empty_weight[-1] = self.eos_coef  # lower weight for background (index 1, foreground index 0)
         self.register_buffer('empty_weight', empty_weight)
+        
+        # for tvsum,
+        self.use_matcher = use_matcher
 
     def loss_spans(self, outputs, targets, indices):
         """Compute the losses related to the bounding boxes, the L1 regression loss and the GIoU loss
@@ -286,6 +298,7 @@ class SetCriterion(nn.Module):
         # Neg pair loss
         saliency_scores_neg = outputs["saliency_scores_neg"].clone()  # (N, L)
         # loss_neg_pair = torch.sigmoid(saliency_scores_neg).mean()
+        
         loss_neg_pair = (- torch.log(1. - torch.sigmoid(saliency_scores_neg)) * vid_token_mask).sum(dim=1).mean()
 
         saliency_scores = outputs["saliency_scores"].clone()  # (N, L)
@@ -420,25 +433,39 @@ class SetCriterion(nn.Module):
 
         # Retrieve the matching between the outputs of the last layer and the targets
         # list(tuples), each tuple is (pred_span_indices, tgt_span_indices)
-        indices = self.matcher(outputs_without_aux, targets)
+
+        # only for HL, do not use matcher
+        if self.use_matcher:
+            indices = self.matcher(outputs_without_aux, targets)
+            losses_target = self.losses
+        else:
+            indices = None
+            losses_target = ["saliency"]
 
         # Compute all the requested losses
         losses = {}
-        for loss in self.losses:
+        # for loss in self.losses:
+        for loss in losses_target:
             losses.update(self.get_loss(loss, outputs, targets, indices))
 
         # In case of auxiliary losses, we repeat this process with the output of each intermediate layer.
         if 'aux_outputs' in outputs:
             for i, aux_outputs in enumerate(outputs['aux_outputs']):
-                indices = self.matcher(aux_outputs, targets)
-                for loss in self.losses:
+                # indices = self.matcher(aux_outputs, targets)
+                if self.use_matcher:
+                    indices = self.matcher(aux_outputs, targets)
+                    losses_target = self.losses
+                else:
+                    indices = None
+                    losses_target = ["saliency"]    
+                # for loss in self.losses:
+                for loss in losses_target:
                     if "saliency" == loss:  # skip as it is only in the top layer
                         continue
                     kwargs = {}
                     l_dict = self.get_loss(loss, aux_outputs, targets, indices, **kwargs)
                     l_dict = {k + f'_{i}': v for k, v in l_dict.items()}
                     losses.update(l_dict)
-
         return losses
 
 
@@ -547,11 +574,15 @@ def build_model(args):
     losses = ['spans', 'labels', 'saliency']
     if args.contrastive_align_loss:
         losses += ["contrastive_align"]
+        
+    # For tvsum dataset
+    use_matcher = not (args.dset_name == 'tvsum')
+        
     criterion = SetCriterion(
         matcher=matcher, weight_dict=weight_dict, losses=losses,
         eos_coef=args.eos_coef, temperature=args.temperature,
         span_loss_type=args.span_loss_type, max_v_l=args.max_v_l,
-        saliency_margin=args.saliency_margin
+        saliency_margin=args.saliency_margin, use_matcher=use_matcher,
     )
     criterion.to(device)
     return model, criterion
