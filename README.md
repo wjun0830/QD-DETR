@@ -96,7 +96,12 @@ For the instructions, check their [github](https://github.com/jayleicn/moment_de
 
 If you find this repository useful, please use the following entry for citation.
 ```
-
+@article{moon2023query,
+  title={Query-Dependent Video Representation for Moment Retrieval and Highlight Detection},
+  author={Moon, WonJun and Hyun, Sangeek and Park, SangUk and Park, Dongchan and Heo, Jae-Pil},
+  journal={arXiv preprint arXiv:2303.13874},
+  year={2023}
+}
 ```
 
 ## Contributors and Contact
