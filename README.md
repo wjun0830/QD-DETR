@@ -91,6 +91,13 @@ Best results are stored in 'results_[domain_name]/best_metric.jsonl'.
 
 are also available as we use the official implementation for Moment-DETR as the basis. 
 For the instructions, check their [github](https://github.com/jayleicn/moment_detr).
+
+
+### QVHighlights pretrained checkpoints
+ Method (Modality) | Model file
+ -- | -- 
+QD-DETR (Video+Audio) Checkpoint | [link](https://www.dropbox.com/s/hsc7jk21ppqasjt/videoaudio.ckpt?dl=0)
+QD-DETR (Video only) Checkpoint | [link](https://www.dropbox.com/s/yygwyljw8514d9r/videoonly.ckpt?dl=0)
  
 ##  Cite QD-DETR (Query-Dependent Video Representation for Moment Retrieval and Highlight Detection)
 
