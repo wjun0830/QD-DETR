@@ -103,10 +103,11 @@ QD-DETR (Video only) Checkpoint | [link](https://www.dropbox.com/s/yygwyljw8514d
 
 If you find this repository useful, please use the following entry for citation.
 ```
-@article{moon2023query,
-  title={Query-Dependent Video Representation for Moment Retrieval and Highlight Detection},
+@inproceedings{moon2023query,
+  title={Query-dependent video representation for moment retrieval and highlight detection},
   author={Moon, WonJun and Hyun, Sangeek and Park, SangUk and Park, Dongchan and Heo, Jae-Pil},
-  journal={arXiv preprint arXiv:2303.13874},
+  booktitle={Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition},
+  pages={23023--23033},
   year={2023}
 }
 ```
