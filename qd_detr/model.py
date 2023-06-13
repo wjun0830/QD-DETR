@@ -20,7 +20,7 @@ def inverse_sigmoid(x, eps=1e-3):
     return torch.log(x1/x2)
 
 class QDDETR(nn.Module):
-    """ This is the Moment-DETR module that performs moment localization. """
+    """ QD DETR. """
 
     def __init__(self, transformer, position_embed, txt_position_embed, txt_dim, vid_dim,
                  num_queries, input_dropout, aux_loss=False,
@@ -34,7 +34,7 @@ class QDDETR(nn.Module):
             txt_dim: int, text query input dimension
             vid_dim: int, video feature input dimension
             num_queries: number of object queries, ie detection slot. This is the maximal number of objects
-                         Moment-DETR can detect in a single video.
+                         QD-DETR can detect in a single video.
             aux_loss: True if auxiliary decoding losses (loss at each decoder layer) are to be used.
             contrastive_align_loss: If true, perform span - tokens contrastive learning
             contrastive_hdim: dimension used for projecting the embeddings before computing contrastive loss
