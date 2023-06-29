@@ -47,9 +47,10 @@ For anaconda setup, please refer to the official [Moment-DETR github](https://gi
 ### Training
 Training with (only video) and (video + audio) can be executed by running the shell below:
 ```
-bash qd_detr/scripts/train.sh 
-bash qd_detr/scripts/train_audio.sh 
+bash qd_detr/scripts/train.sh --seed 2018
+bash qd_detr/scripts/train_audio.sh --seed 2018
 ```
+To calculate the standard deviation in the paper, we ran with 5 different seeds 0, 1, 2, 3, and 2018 (2018 is the seed used in Moment-DETR).
 Best validation accuracy is yielded at the last epoch. 
 
 ### Inference Evaluation and Codalab Submission for QVHighlights
