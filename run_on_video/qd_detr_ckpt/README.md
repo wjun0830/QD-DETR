@@ -1,4 +1,4 @@
-Model checkpoint [video_model_best.ckpt](video_model_best.ckpt) is trained with only QVhighlights video and text features as input. 
+Model checkpoint [model_best.ckpt](model_best.ckpt) provided for running example data is only trained with QVhighlights video and text features using CLIP as input (No slowfast features used). 
 It is trained from scratch, without ASR pre-training. 
 
-To run the code with videoaudio model ckpt, there may be some implementations you may have to change or add.
+To run the code with video/videoaudio model ckpt that are trained with slowfast+clip features, you need to prepare slowfast features and modify some implementations.
