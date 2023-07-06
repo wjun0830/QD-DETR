@@ -9,7 +9,7 @@ WonJun Moon<sup>*1</sup>, SangEek Hyun<sup>*1</sup>, SangUk Park<sup>2</sup>, Do
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/query-dependent-video-representation-for/moment-retrieval-on-qvhighlights)](https://paperswithcode.com/sota/moment-retrieval-on-qvhighlights?p=query-dependent-video-representation-for)
 [![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/query-dependent-video-representation-for/highlight-detection-on-tvsum)](https://paperswithcode.com/sota/highlight-detection-on-tvsum?p=query-dependent-video-representation-for)
 
-[[Arxiv](https://arxiv.org/abs/2303.13874)] | [[Paper]()]
+[[Arxiv](https://arxiv.org/abs/2303.13874)] | [[Paper](https://openaccess.thecvf.com/content/CVPR2023/papers/Moon_Query-Dependent_Video_Representation_for_Moment_Retrieval_and_Highlight_Detection_CVPR_2023_paper.pdf)]
 
 ----------
 
@@ -47,9 +47,10 @@ For anaconda setup, please refer to the official [Moment-DETR github](https://gi
 ### Training
 Training with (only video) and (video + audio) can be executed by running the shell below:
 ```
-bash qd_detr/scripts/train.sh 
-bash qd_detr/scripts/train_audio.sh 
+bash qd_detr/scripts/train.sh --seed 2018
+bash qd_detr/scripts/train_audio.sh --seed 2018
 ```
+To calculate the standard deviation in the paper, we ran with 5 different seeds 0, 1, 2, 3, and 2018 (2018 is the seed used in Moment-DETR).
 Best validation accuracy is yielded at the last epoch. 
 
 ### Inference Evaluation and Codalab Submission for QVHighlights
