@@ -12,6 +12,10 @@ WonJun Moon<sup>*1</sup>, SangEek Hyun<sup>*1</sup>, SangUk Park<sup>2</sup>, Do
 [[Arxiv](https://arxiv.org/abs/2303.13874)] | [[Paper](https://openaccess.thecvf.com/content/CVPR2023/papers/Moon_Query-Dependent_Video_Representation_for_Moment_Retrieval_and_Highlight_Detection_CVPR_2023_paper.pdf)]
 
 ----------
+## Updates & News 
+* Charades-STA experiments with C3D features are actually conducted with I3D features and I3D benchmarking tables.
+Features are provided [here](https://app.box.com/s/h0sxa5klco6qve5ahnz50ly2nksmuedw) from [VSLNET Github](https://github.com/26hzhang/VSLNet/tree/master).
+Sorry for the inconvenience.
 
 ## Prerequisites
 <b>0. Clone this repo</b>
