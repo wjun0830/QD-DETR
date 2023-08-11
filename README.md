@@ -43,7 +43,6 @@ Python version 3.7 is required.
 ```
 pip install -r requirements.txt
 ```
-Requirements.txt also include other libraries. Will be cleaned up soon.
 For anaconda setup, please refer to the official [Moment-DETR github](https://github.com/jayleicn/moment_detr).
 
 ## QVHighlights
