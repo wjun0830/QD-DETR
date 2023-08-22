@@ -156,7 +156,7 @@ def compute_hl_results(model, eval_loader, opt, epoch_i=None, criterion=None, tb
                     rec, prc = _rec, _prc
 
                 video_ap.append(ap)
-        video_ap_collected.append(video_ap)  
+            video_ap_collected.append(video_ap)  
 
     mean_ap = np.mean(video_ap_collected)
     submmission = dict(mAP=round(mean_ap, 5))
