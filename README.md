@@ -16,7 +16,7 @@ WonJun Moon<sup>*1</sup>, SangEek Hyun<sup>*1</sup>, SangUk Park<sup>2</sup>, Do
 * Charades-STA experiments with C3D features are actually conducted with I3D features and I3D benchmarking tables.
 Features are provided [here](https://app.box.com/s/h0sxa5klco6qve5ahnz50ly2nksmuedw) from [VSLNET Github](https://github.com/26hzhang/VSLNet/tree/master).
 Sorry for the inconvenience.
-* We introduce our new paper [CG-DETR](https://github.com/wjun0830/CGDETR) 
+* Our new paper on moment retrieval and highlight detection is now available at [[CG-DETR arxiv]](https://arxiv.org/abs/2311.08835) (Correlation-guided Query-Dependency Calibration in Video Representation Learning for Temporal Grounding). Codes will be soon available at [[CG-DETR Github]](https://github.com/wjun0830/CGDETR).
 
 ## Prerequisites
 <b>0. Clone this repo</b>
