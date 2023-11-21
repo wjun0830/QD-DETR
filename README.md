@@ -22,6 +22,7 @@ Sorry for the inconvenience.
 <b>0. Clone this repo</b>
 
 <b>1. Prepare datasets</b>
+> (2023/11/21) For a newer version of instructions for preparing datasets, please refer to [CG-DETR](https://github.com/wjun0830/CGDETR).
 
 <b>QVHighlights</b> : Download official feature files for QVHighlights dataset from Moment-DETR. 
 
